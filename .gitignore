@@ -1,4 +1,6 @@
 .metadata
+*.xml
+apachepoi/*.xml
 target/
 pom.xml.tag
 pom.xml.releaseBackup
