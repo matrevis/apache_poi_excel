@@ -1,6 +1,6 @@
 .metadata
-*.xml
-apachepoi/*.xml
+*.xlsx
+apachepoi/*.xlsx
 target/
 pom.xml.tag
 pom.xml.releaseBackup
