@@ -28,6 +28,7 @@ public class ApachePoiTest {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		
 		// default sheet
+		/*
 		XSSFSheet sheet = workbook.createSheet("Datatypes in Java");
 		Object[][] datatypes = { { "Datatype", "Type", "Size(in bytes)" }, { "int", "Primitive", 2 },
 				{ "float", "Primitive", 4 }, { "double", "Primitive", 8 }, { "char", "Primitive", 1 },
@@ -48,6 +49,7 @@ public class ApachePoiTest {
 				}
 			}
 		}
+		*/
 		// end default sheet
 		
 		XSSFSheet KPIAvailability = workbook.createSheet("KPI availability");
@@ -121,6 +123,12 @@ public class ApachePoiTest {
 			}
 		}
 		*/
+		
+		// autosize interested columns
+		logger.info("ApachePOI: resize columns..");
+		for(int i=1; i<colNum; i++) {
+			KPIAvailability.autoSizeColumn(i);
+		}
 		try {
 			FileOutputStream outputStream = new FileOutputStream(FILE_NAME);
 			workbook.write(outputStream);
