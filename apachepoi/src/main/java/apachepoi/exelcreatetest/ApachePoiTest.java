@@ -1,6 +1,5 @@
 package apachepoi.exelcreatetest;
 
-import java.awt.List;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,17 +27,17 @@ public class ApachePoiTest {
 	private static final String FILE_NAME = "target/MyExcelTest.xlsx";
 
 	private static Integer colMaxNum = 2;
-	
+
 	// create cellstyle to set bg color cell
 	private static CellStyle doWBStyle(XSSFWorkbook wb, Short s, BorderStyle bs) {
 		CellStyle style = wb.createCellStyle();
-	    style.setFillForegroundColor(s);
-	    style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-	    style.setBorderBottom(bs);
-	    style.setBorderLeft(bs);
-	    style.setBorderRight(bs);
-	    style.setBorderTop(bs);	    
-	    return style;
+		style.setFillForegroundColor(s);
+		style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		style.setBorderBottom(bs);
+		style.setBorderLeft(bs);
+		style.setBorderRight(bs);
+		style.setBorderTop(bs);
+		return style;
 	}
 
 	private static void doHeader(XSSFSheet sheet, Object[] headerKPI) {
@@ -81,13 +80,13 @@ public class ApachePoiTest {
 			}
 		}
 	}
-	
+
 	private static void doBody(XSSFSheet sheet, ArrayList<Object[]> data) {
 		XSSFWorkbook wb = sheet.getWorkbook();
 		CellStyle cs = doWBStyle(wb, IndexedColors.WHITE.getIndex(), BorderStyle.MEDIUM);
 		int colNum = 1;
 		int rowNum = 3;
-		for (Object[] rowItem: data) {
+		for (Object[] rowItem : data) {
 			colNum = 1;
 			Row rowData = sheet.createRow(rowNum);
 			rowNum += 1;
@@ -119,33 +118,27 @@ public class ApachePoiTest {
 		// write code here!
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
-//		CellStyle HStyle = doHeaderStyle(workbook);
+		//CellStyle HStyle = doHeaderStyle(workbook);
 
 		XSSFSheet KPIAvailability = workbook.createSheet("KPI availability");
 		XSSFSheet KPIPerformance = workbook.createSheet("KPI perfomance");
 
-		// KPI
-
 		Object[] headerKPIA = { "HeaderColonna1", "HeaderColonna2" };
-
 		Object[] subHeaderKPIA = { "SubHeaderColonna1_1", "SubHeaderColonna1_2", "SubHeaderColonna2_1",
 				"SubHeaderColonna2_2" };
-
+		// riempimento dati KPIAvailability
+		// Object[][] dataFromJPA = { { "31-Nov", 100, 0, 99, 1 }, { "01-Dec", 100, 0,
+		// 95, 5 } };
+		Object[] datoSingolo = { "31-Nov", 100, 0, 99, 1 };
+		ArrayList<Object[]> listOfJPAData = new ArrayList<Object[]>();
+		for (int i = 0; i < 100; i++) {
+			listOfJPAData.add(datoSingolo);
+		}
 		// creo Header di KPI Availability
 		doHeader(KPIAvailability, headerKPIA);
 		doSubHeader(KPIAvailability, subHeaderKPIA);
-		doResize(KPIAvailability);
-
-		// riempimento dati KPIAvailability
-		Object[][] dataFromJPA = { { "31-Nov", 100, 0, 99, 1 }, { "01-Dec", 100, 0, 95, 5 } };
-		Object[] datoSingolo = { "31-Nov", 100, 0, 99, 1 };
-		ArrayList<Object[]> listOfJPAData = new ArrayList<Object[]>();
-		for(int i=0; i<100; i++) {
-			listOfJPAData.add(datoSingolo);
-		}
-		
-		//doBody(KPIAvailability, dataFromJPA);
 		doBody(KPIAvailability, listOfJPAData);
+		doResize(KPIAvailability);
 
 		try {
 			FileOutputStream outputStream = new FileOutputStream(FILE_NAME);
@@ -153,10 +146,8 @@ public class ApachePoiTest {
 			workbook.close();
 		} catch (FileNotFoundException e) {
 			logger.error("Errore: file non trovato o inaccessibile..", e);
-//			e.printStackTrace();
 		} catch (IOException e) {
 			logger.error("Errore: ioExp..", e);
-//			e.printStackTrace();
 		}
 
 		// end
