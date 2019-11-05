@@ -6,7 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -24,13 +28,28 @@ public class ApachePoiTest {
 	private static final String FILE_NAME = "target/MyExcelTest.xlsx";
 
 	private static Integer colMaxNum = 2;
+	
+	// create cellstyle to set bg color cell
+	private static CellStyle doWBStyle(XSSFWorkbook wb, Short s, BorderStyle bs) {
+		CellStyle style = wb.createCellStyle();
+	    style.setFillForegroundColor(s);
+	    style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+	    style.setBorderBottom(bs);
+	    style.setBorderLeft(bs);
+	    style.setBorderRight(bs);
+	    style.setBorderTop(bs);	    
+	    return style;
+	}
 
 	private static void doHeader(XSSFSheet sheet, Object[] headerKPI) {
+		XSSFWorkbook wb = sheet.getWorkbook();
+		CellStyle cs = doWBStyle(wb, IndexedColors.ROSE.getIndex(), BorderStyle.NONE);
 		Row headerRow = sheet.createRow(1);
 		int colNum = 2;
 		for (Object child : headerKPI) {
 			Cell cell = headerRow.createCell(colNum);
 			sheet.addMergedRegion(new CellRangeAddress(1, 1, colNum, colNum + 1));
+			cell.setCellStyle(cs);
 			colNum += 2;
 			colMaxNum = colNum > colMaxNum ? colNum : colMaxNum;
 			if (child instanceof String) {
@@ -44,10 +63,13 @@ public class ApachePoiTest {
 	}
 
 	private static void doSubHeader(XSSFSheet sheet, Object[] subHeaderKPI) {
+		XSSFWorkbook wb = sheet.getWorkbook();
+		CellStyle cs = doWBStyle(wb, IndexedColors.AQUA.getIndex(), BorderStyle.MEDIUM);
 		Row subHeaderRow = sheet.createRow(2);
 		int colNum = 2;
 		for (Object child : subHeaderKPI) {
 			Cell cell = subHeaderRow.createCell(colNum);
+			cell.setCellStyle(cs);
 			colNum += 1;
 			if (child instanceof String) {
 				cell.setCellValue((String) child);
@@ -61,6 +83,8 @@ public class ApachePoiTest {
 	}
 	
 	private static void doBody(XSSFSheet sheet, ArrayList<Object[]> data) {
+		XSSFWorkbook wb = sheet.getWorkbook();
+		CellStyle cs = doWBStyle(wb, IndexedColors.WHITE.getIndex(), BorderStyle.MEDIUM);
 		int colNum = 1;
 		int rowNum = 3;
 		for (Object[] rowItem: data) {
@@ -69,6 +93,7 @@ public class ApachePoiTest {
 			rowNum += 1;
 			for (Object child : rowItem) {
 				Cell cell = rowData.createCell(colNum++);
+				cell.setCellStyle(cs);
 				if (child instanceof String) {
 					cell.setCellValue((String) child);
 				} else if (child instanceof Integer) {
@@ -94,6 +119,7 @@ public class ApachePoiTest {
 		// write code here!
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
+//		CellStyle HStyle = doHeaderStyle(workbook);
 
 		XSSFSheet KPIAvailability = workbook.createSheet("KPI availability");
 		XSSFSheet KPIPerformance = workbook.createSheet("KPI perfomance");
