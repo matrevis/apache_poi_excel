@@ -1,8 +1,10 @@
 package apachepoi.exelcreatetest;
 
+import java.awt.List;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -19,7 +21,7 @@ public class ApachePoiTest {
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(ApachePoiTest.class);
 
-	private static final String FILE_NAME = "MyExcelTest.xlsx";
+	private static final String FILE_NAME = "target/MyExcelTest.xlsx";
 
 	private static Integer colMaxNum = 2;
 
@@ -57,6 +59,28 @@ public class ApachePoiTest {
 			}
 		}
 	}
+	
+	private static void doBody(XSSFSheet sheet, ArrayList<Object[]> data) {
+		int colNum = 1;
+		int rowNum = 3;
+		for (Object[] rowItem: data) {
+			colNum = 1;
+			Row rowData = sheet.createRow(rowNum);
+			rowNum += 1;
+			for (Object child : rowItem) {
+				Cell cell = rowData.createCell(colNum++);
+				if (child instanceof String) {
+					cell.setCellValue((String) child);
+				} else if (child instanceof Integer) {
+					cell.setCellValue((Integer) child);
+				} else {
+					cell.setBlank();
+					logger.warn("Warning: empty cell at colNum: {}, oggetto: {} non convertibile in String o Integer..",
+							colNum++, child);
+				}
+			}
+		}
+	}
 
 	private static void doResize(XSSFSheet sheet) {
 		logger.info("ApachePOI resize columns..");
@@ -86,16 +110,16 @@ public class ApachePoiTest {
 		doSubHeader(KPIAvailability, subHeaderKPIA);
 		doResize(KPIAvailability);
 
-		/*
-		 * Object[][] dataFromJPA = { {"misurazione1", 1, 0}, {"misurazione2", 1, 0} };
-		 * 
-		 * colNum = 2; for (Object child : dataFromJPA) { Cell cell =
-		 * headerRow.createCell(colNum++); if(child instanceof String) {
-		 * cell.setCellValue( (String) child); } else if(child instanceof Integer) {
-		 * cell.setCellValue( (Integer) child); } else { cell.setBlank(); logger.
-		 * warn("Warning: empty cell at colNum: {}, oggetto: {} non convertibile in String o Integer.."
-		 * , colNum++, child); } }
-		 */
+		// riempimento dati KPIAvailability
+		Object[][] dataFromJPA = { { "31-Nov", 100, 0, 99, 1 }, { "01-Dec", 100, 0, 95, 5 } };
+		Object[] datoSingolo = { "31-Nov", 100, 0, 99, 1 };
+		ArrayList<Object[]> listOfJPAData = new ArrayList<Object[]>();
+		for(int i=0; i<100; i++) {
+			listOfJPAData.add(datoSingolo);
+		}
+		
+		//doBody(KPIAvailability, dataFromJPA);
+		doBody(KPIAvailability, listOfJPAData);
 
 		try {
 			FileOutputStream outputStream = new FileOutputStream(FILE_NAME);
@@ -112,5 +136,4 @@ public class ApachePoiTest {
 		// end
 		logger.info("End..");
 	}
-
 }
